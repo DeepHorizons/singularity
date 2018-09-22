@@ -20,15 +20,14 @@ RUN apt-get update && apt-get install -y \
     tar \
     git
 
-RUN wget --no-check-certificate https://github.com/singularityware/singularity/releases/download/$SINGULARITY_VERSION/singularity-$SINGULARITY_VERSION.tar.gz
-RUN tar xvf singularity-$SINGULARITY_VERSION.tar.gz
-
-RUN cd singularity-$SINGULARITY_VERSION && \
+RUN wget --no-check-certificate https://github.com/singularityware/singularity/releases/download/$SINGULARITY_VERSION/singularity-$SINGULARITY_VERSION.tar.gz && \
+    tar xvf singularity-$SINGULARITY_VERSION.tar.gz && \
+    cd singularity-$SINGULARITY_VERSION && \
     ./configure --prefix=$CI_PROJECT_DIR/singularity && \
     make -j$NUM_CPU && \
-    make install
+    make install && \
+    rm -rf singularity-$SINGULARITY_VERSION*
 
 ENV PATH="${PATH}:/opt/singularity/bin"
 
-RUN rm -rf singularity-$SINGULARITY_VERSION
 
