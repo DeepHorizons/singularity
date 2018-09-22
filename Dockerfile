@@ -5,11 +5,6 @@ ENV NUM_CPU 16
 ENV CI_PROJECT_DIR /opt
 ENV LANG en_US.utf8
 
-# Enable universe repos and update the repos to point to RIT https mirrors
-RUN sed -i "/^# deb.*universe/ s/^# //" /etc/apt/sources.list
-RUN sed -r -i "s/https?:\/\/archive.ubuntu.com/http:\/\/mirrors.rit.edu/g" /etc/apt/sources.list
-RUN sed -r -i "s/https?:\/\/security.ubuntu.com/http:\/\/mirrors.rit.edu/g" /etc/apt/sources.list
-
 # Install everything nessesary to build singularity
 RUN apt-get update && apt-get install -y \
     # From singularity
@@ -23,13 +18,7 @@ RUN apt-get update && apt-get install -y \
     make \
     wget \
     tar \
-    git \
-    # From singularity
-    python3 \
-    openssh-client \
-    rsync \
-    sudo \
-    language-pack-en
+    git
 
 RUN wget --no-check-certificate https://github.com/singularityware/singularity/releases/download/$SINGULARITY_VERSION/singularity-$SINGULARITY_VERSION.tar.gz
 RUN tar xvf singularity-$SINGULARITY_VERSION.tar.gz
