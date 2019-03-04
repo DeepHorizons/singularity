@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-ENV SINGULARITY_VERSION="v3.0.0" NUM_CPU=16 LANG=en_US.utf8
+ENV SINGULARITY_VERSION="3.1.0" NUM_CPU=16 LANG=en_US.utf8
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -27,7 +27,7 @@ ENV PATH=/usr/local/go/bin:$PATH:$GOPATH/bin
 # Install singularity
 RUN mkdir -p $GOPATH/src/github.com/sylabs && \
     cd /tmp && \
-    wget --no-check-certificate https://github.com/singularityware/singularity/releases/download/$SINGULARITY_VERSION/singularity-$SINGULARITY_VERSION.tar.gz && \
+    wget --no-check-certificate https://github.com/singularityware/singularity/releases/download/v$SINGULARITY_VERSION/singularity-$SINGULARITY_VERSION.tar.gz && \
     tar xf singularity-$SINGULARITY_VERSION.tar.gz -C $GOPATH/src/github.com/sylabs/ && \
     rm /tmp/singularity-$SINGULARITY_VERSION.tar.gz && \
     cd $GOPATH/src/github.com/sylabs/singularity && \
