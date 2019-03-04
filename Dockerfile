@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as build
 
 ENV SINGULARITY_VERSION="3.1.0" LANG=en_US.utf8
 
@@ -38,4 +38,10 @@ RUN mkdir -p $GOPATH/src/github.com/sylabs && \
 
 ENV PATH="$PATH:/usr/local/singularity/bin"
 
+FROM ubuntu:18.04
+COPY --from=build /usr/local/singularity /usr/local/singularity
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    squashfs-tools
+ENV PATH="/usr/local/singularity/bin:$PATH"
 
