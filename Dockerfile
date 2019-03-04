@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-ENV SINGULARITY_VERSION="3.1.0" NUM_CPU=16 LANG=en_US.utf8
+ENV SINGULARITY_VERSION="3.1.0" LANG=en_US.utf8
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -33,9 +33,8 @@ RUN mkdir -p $GOPATH/src/github.com/sylabs && \
     cd $GOPATH/src/github.com/sylabs/singularity && \
     go get -u github.com/golang/dep/cmd/dep && \
     ./mconfig -p /usr/local/singularity && \
-    cd ./builddir && \
-    make -j$NUM_CPU && \
-    make install
+    make -C ./builddir && \
+    make -C ./builddir install
 
 ENV PATH="$PATH:/usr/local/singularity/bin"
 
