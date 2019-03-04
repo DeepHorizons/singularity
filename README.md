@@ -6,7 +6,7 @@ This repo contains an automated build of singularity.
 # TL;DR
 
 * "`docker run -it --privileged deephorizons/singularity`" for the latest version
-* "`docker run -it --privileged deephorizons/singularity:3.0.0`" for a specific version
+* "`docker run -it --privileged deephorizons/singularity:3.1.0`" for a specific version
 
 
 
