@@ -1,12 +1,12 @@
 # This Repo
-This repo contains an automated build of singularity.
+This repo contains an automated build of singularity. It can be used do build singularity images inside docker images or to run singularity images. In order to do so you typically need to enable the `--privileged` flag which disables most of the container security, so beware.
 
 
 
 # TL;DR
 
 * "`docker run -it --privileged deephorizons/singularity`" for the latest version
-* "`docker run -it --privileged deephorizons/singularity:3.1.0`" for a specific version
+* "`docker run -it --privileged deephorizons/singularity:3.3.0`" for a specific version
 
 
 

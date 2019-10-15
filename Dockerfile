@@ -1,37 +1,39 @@
 FROM ubuntu:18.04 as build
 
-ENV SINGULARITY_VERSION="3.1.0" LANG=en_US.utf8
+ENV LANG=en_US.utf8
+
+RUN echo "deb mirror://mirrors.ubuntu.com/mirrors.txt bionic main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y \
     build-essential \
     libssl-dev \
     uuid-dev \
     libgpgme11-dev \
+    squashfs-tools \
+    libseccomp-dev \
     wget \
+    pkg-config \
     git \
     tar \
-    squashfs-tools  # mksquashfs
+    ca-certificates
 
 # Install go
-ENV VERSION=1.11 OS=linux ARCH=amd64
+ENV VERSION=1.12 OS=linux ARCH=amd64
 RUN cd /tmp && \
     wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \
-    tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz && \
-    rm go$VERSION.$OS-$ARCH.tar.gz
+    tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
 
 # XXX For some reason these need to be on different lines
 ENV HOME=/root
 ENV GOPATH=$HOME/go
 ENV PATH=/usr/local/go/bin:$PATH:$GOPATH/bin
+ENV SINGULARITY_VERSION="3.3.0"
 
 # Install singularity
-RUN mkdir -p $GOPATH/src/github.com/sylabs && \
-    cd /tmp && \
-    wget --no-check-certificate https://github.com/singularityware/singularity/releases/download/v$SINGULARITY_VERSION/singularity-$SINGULARITY_VERSION.tar.gz && \
-    tar xf singularity-$SINGULARITY_VERSION.tar.gz -C $GOPATH/src/github.com/sylabs/ && \
-    rm /tmp/singularity-$SINGULARITY_VERSION.tar.gz && \
-    cd $GOPATH/src/github.com/sylabs/singularity && \
-    go get -u github.com/golang/dep/cmd/dep && \
+RUN cd /tmp && \
+    wget https://github.com/sylabs/singularity/releases/download/v$SINGULARITY_VERSION/singularity-$SINGULARITY_VERSION.tar.gz && \
+    tar -zxf singularity-$SINGULARITY_VERSION.tar.gz && \
+    cd singularity && \
     ./mconfig -p /usr/local/singularity && \
     make -C ./builddir && \
     make -C ./builddir install
@@ -42,6 +44,8 @@ FROM ubuntu:18.04
 COPY --from=build /usr/local/singularity /usr/local/singularity
 RUN apt-get update && apt-get install -y \
     ca-certificates \
-    squashfs-tools
+    squashfs-tools \
+    uidmap
 ENV PATH="/usr/local/singularity/bin:$PATH"
+RUN rm /etc/subuid /etc/subgid
 
