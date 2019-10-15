@@ -15,19 +15,19 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     git \
     tar \
-    ca-certificates
+    ca-certificates \
+    cryptsetup-bin
 
 # Install go
-ENV VERSION=1.12 OS=linux ARCH=amd64
+ENV VERSION=1.13.1 OS=linux ARCH=amd64
 RUN cd /tmp && \
     wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \
-    tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
+    tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz && \
+    rm go$VERSION.$OS-$ARCH.tar.gz
 
 # XXX For some reason these need to be on different lines
-ENV HOME=/root
-ENV GOPATH=$HOME/go
-ENV PATH=/usr/local/go/bin:$PATH:$GOPATH/bin
-ENV SINGULARITY_VERSION="3.3.0"
+ENV PATH=/usr/local/go/bin:$PATH
+ENV SINGULARITY_VERSION="3.4.1"
 
 # Install singularity
 RUN cd /tmp && \
@@ -36,7 +36,8 @@ RUN cd /tmp && \
     cd singularity && \
     ./mconfig -p /usr/local/singularity && \
     make -C ./builddir && \
-    make -C ./builddir install
+    make -C ./builddir install && \
+    rm ../singularity-$SINGULARITY_VERSION.tar.gz
 
 ENV PATH="$PATH:/usr/local/singularity/bin"
 
